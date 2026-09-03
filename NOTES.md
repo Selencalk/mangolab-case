@@ -32,8 +32,9 @@ behind, and never mislabel the one we do return.**
 
 ## With another day
 
-- A short TTL on the "latest" (no-date) cache entry — a published rate is
-  immutable, but "latest" can go stale within the process lifetime.
+- A short TTL on "latest" so repeats within a few minutes are cheap while still
+  refreshing after the ECB publishes. (For now "latest" is simply not cached — a
+  stale rate is worse than a fresh round-trip — while dated rates are cached.)
 - Support multi-currency (`symbols=A,B,C`) and an amount-free "just the rate" mode.
 - Structured logging + a `/healthz`, and a small contract test that runs against
   the real Frankfurter API in CI (kept out of the offline suite).

@@ -118,5 +118,9 @@ class FxClient:
             )
 
         result = (float(rate), rate_date)
-        self._cache[cache_key] = result
+        # Only cache date-pinned rates: they are immutable once published. A
+        # "latest" answer can change the moment the ECB publishes, so caching it
+        # would serve a stale rate — worse than a fresh round-trip.
+        if on_date is not None:
+            self._cache[cache_key] = result
         return result

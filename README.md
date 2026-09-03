@@ -100,7 +100,9 @@ Every failure is a non-2xx status with the same shape:
 ## Caching
 
 Rates for a `(from, to, date)` are immutable once published, so the first answer
-is cached in-process. Repeating the same question does not re-ask the upstream.
+is cached in-process and repeating the same dated question does not re-ask the
+upstream. A dateless "latest" query is **not** cached — it can change the moment
+the ECB publishes, and serving a stale rate would be worse than a fresh call.
 
 ## Layout
 

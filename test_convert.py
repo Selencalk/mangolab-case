@@ -126,6 +126,20 @@ def test_repeat_question_does_not_reask_upstream():
     assert len(up.calls) == 1
 
 
+def test_latest_is_never_cached():
+    # "latest" can change as soon as the ECB publishes, so every call must ask
+    # upstream again rather than serve a stale rate.
+    client, up = make_client(
+        lambda r: _json({"amount": 1.0, "base": "EUR", "date": "2026-09-02",
+                         "rates": {"TRY": 55.9145}})
+    )
+    params = {"amount": 1, "from": "EUR", "to": "TRY"}
+    client.get("/tools/convert", params=params)
+    client.get("/tools/convert", params=params)
+    assert len(up.calls) == 2
+    assert all(c.url.path == "/v1/latest" for c in up.calls)
+
+
 # --- client-side rejections (no upstream call) ----------------------------
 
 def test_future_date_rejected_without_upstream():
